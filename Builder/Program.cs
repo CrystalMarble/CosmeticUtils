@@ -69,6 +69,7 @@ internal class Builder
     public static void CopyDeps()
     {
         var LibsPath = Path.Combine(new[] { Directory.GetCurrentDirectory(), "..", "..", "..", "..", "CosmeticUtils", "Libraries" });
+        if (!Directory.Exists(LibsPath)) Directory.CreateDirectory($"{LibsPath}");
         Console.WriteLine($"Copying {Config.Dependencies.Length} dependencies...");
         foreach (var dependency in Config.Dependencies)
         {
