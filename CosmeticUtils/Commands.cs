@@ -1,5 +1,6 @@
 ﻿using MIU;
 using UnityEngine;
+using CosmeticUtils.Libs;
 
 namespace CosmeticUtils
 {
@@ -32,7 +33,7 @@ namespace CosmeticUtils
             return "";
         }
 
-        [ConsoleCommand(null, null, null, false, false, description = "Search for a cosmetic and return its info")]
+        [ConsoleCommand(null, null, null, false, false, description = "Get all cosmetics of a given type")]
         public static string getCosmetics(params string[] type)
         {
             if (type.Length == 0) return "Please specify a falue for parameter 'type'";
@@ -67,5 +68,48 @@ namespace CosmeticUtils
             }
             return "";
         }
+
+        [ConsoleCommand(null, null, null, false, false, description = "Change your cosmetics to a given ID")]
+        public static string forceCosmetic(params string[] args)
+        {
+            CosmeticReturnType c = CosmeticLib.GetCosmeticById(args[0]);
+            if (c == null) return "Cosmetic not found!";
+            CosmeticLib.ApplyCosmetic(c.type, c.cosmetic);
+            switch (c.type)
+            {
+                case CosmeticType.Skin:
+                    return "Applied cosmetic " + c.cosmetic.name + " (skin)";
+
+                case CosmeticType.Trail:
+                    return "Applied cosmetic " + c.cosmetic.name + " (trail)";
+
+                case CosmeticType.Hat:
+                    return "Applied cosmetic " + c.cosmetic.name + " (hat)";
+
+                case CosmeticType.Blast:
+                    return "Applied cosmetic " + c.cosmetic.name + " (blast)";
+
+                case CosmeticType.Respawn:
+                    return "Applied cosmetic " + c.cosmetic.name + " (respawn)";
+
+                default:
+                    return "Unknown cosmetic type!";
+            }
+        }
+
+        [ConsoleCommand(null, null, null, false, false)]
+        public static string hiddencosmetics()
+        {
+            var cosmetics = CosmeticManager.instance.cosmetics.AllCosmetics;
+
+            foreach (var cosmetic in cosmetics)
+            {
+                if (cosmetic.hidden)
+                    MonoBehaviour.print($"{cosmetic.name} ({cosmetic.Id}) | {(cosmetic.hidden ? "hidden" : "shown")} | {(cosmetic.clientUnlockable ? "client unlockable" : "client not unlockable")}");
+            }
+            return "";
+        }
     }
+
+
 }
